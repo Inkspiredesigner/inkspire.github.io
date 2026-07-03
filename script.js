@@ -316,3 +316,29 @@ setInterval(function() {
         `;
     }
 }, 1000); // Verifica a cada 1 segundo se o cara abriu o inspecionar
+/* =======================================================
+   BLINDAGEM DE CONTEÚDO (ANTI-SELEÇÃO E ANTI-ARRASTE)
+   ======================================================= */
+
+/* Impedir que qualquer imagem do site seja arrastada com o mouse */
+img {
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    pointer-events: none !important; /* Desativa interações diretas do mouse na imagem */
+}
+
+/* Permitir cliques apenas nos links e botões reais do site */
+a, button, input, textarea, .card, .fechar-lightbox, .dot {
+    pointer-events: auto !important;
+}
+
+/* Impedir a seleção de qualquer texto do site (Ninguém consegue copiar seus textos) */
+body {
+    -webkit-user-select: none !important;  /* Safari */
+    -moz-user-select: none !important;     /* Firefox */
+    -ms-user-select: none !important;      /* IE10+ */
+    user-select: none !important;          /* Padrão moderno */
+}

@@ -204,6 +204,7 @@ document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 });
 
+
 // ==========================================
 // ENVIO SEGURO E OCULTO DE FORMULÁRIO (AJAX)
 // ==========================================
@@ -243,25 +244,24 @@ if(formFeedback) {
         });
     });
 }
+
+
 // ==========================================
 // SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
 // ==========================================
 
 // 1. Bloquear teclas e atalhos perigosos de captura e inspeção
 document.addEventListener('keydown', function(e) {
-    // Bloqueia a tecla Print Screen isolada
     if (e.key === "PrintScreen" || e.keyCode === 44) {
         e.preventDefault();
         alert("⚠️ Proteção Inkspire: Capturas de tela não são permitidas para proteger os direitos autorais dos projetos.");
     }
     
-    // Bloqueia Ctrl + P (Tentativa de imprimir/salvar página como PDF)
     if (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
         e.preventDefault();
         alert("⚠️ Impressão bloqueada para proteção das artes.");
     }
 
-    // Bloqueia Ctrl + Shift + I ou F12 (Inspecionar elemento para pegar links das imagens)
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
         e.preventDefault();
     }
@@ -269,76 +269,57 @@ document.addEventListener('keydown', function(e) {
 
 // 2. Desfocar o site se o usuário mudar de janela ou tentar usar uma ferramenta externa
 window.addEventListener('blur', () => {
-    document.body.style.filter = 'blur(15px)'; // Deixa o site ilegível se perder o foco
+    document.body.style.filter = 'blur(15px)';
 });
 
 window.addEventListener('focus', () => {
-    document.body.style.filter = 'none'; // Volta ao normal quando o usuário clica de volta no site
+    document.body.style.filter = 'none';
 });
-// ==========================================
-// ANTI-INSPECIONAR AVANÇADO (CONGELAR NAVEGADOR)
-// ==========================================
-setInterval(function() {
-    const antes = new Date().getTime();
-    
-    // O comando 'debugger' só é ativado se o console do Inspecionar estiver ABERTO
-    debugger; 
-    
-    const depois = new Date().getTime();
-    
-    // Se demorou mais de 100ms para rodar, significa que o Inspecionar pegou o debugger
-    if (depois - antes > 100) {
-        document.body.innerHTML = `
-            <div style="
-                height: 100vh; 
-                display: flex; 
-                flex-direction: column;
-                align-items: center; 
-                justify-content: center; 
-                background: #0b1020; 
-                color: #ffdf00; 
-                font-family: 'Poppins', sans-serif;
-                text-align: center;
-                padding: 20px;
-            ">
-                <h2>⚠️ Acesso Bloqueado</h2>
-                <p style="color: #fff;">O uso das ferramentas de desenvolvedor é proibido neste portfólio.</p>
-                <button onclick="window.location.reload()" style="
-                    background: #009c3b; 
-                    color: white; 
-                    border: none; 
-                    padding: 10px 20px; 
-                    border-radius: 5px; 
-                    cursor: pointer;
-                    margin-top: 15px;
-                ">Recarregar Site</button>
-            </div>
-        `;
-    }
-}, 1000); // Verifica a cada 1 segundo se o cara abriu o inspecionar
-/* =======================================================
-   BLINDAGEM DE CONTEÚDO (ANTI-SELEÇÃO E ANTI-ARRASTE)
-   ======================================================= */
 
-/* Impedir que qualquer imagem do site seja arrastada com o mouse */
-img {
-    user-select: none !important;
-    -webkit-user-drag: none !important;
-    -khtml-user-drag: none !important;
-    -moz-user-drag: none !important;
-    -o-user-drag: none !important;
-    pointer-events: none !important; /* Desativa interações diretas do mouse na imagem */
-}
 
-/* Permitir cliques apenas nos links e botões reais do site */
-a, button, input, textarea, .card, .fechar-lightbox, .dot {
-    pointer-events: auto !important;
-}
+// =======================================================
+// ANTI-INSPECIONAR PROTEGIDO COM CHAVE DE ADMINISTRADOR 🕵️‍♂️
+// =======================================================
+const urlParams = new URLSearchParams(window.location.search);
 
-/* Impedir a seleção de qualquer texto do site (Ninguém consegue copiar seus textos) */
-body {
-    -webkit-user-select: none !important;  /* Safari */
-    -moz-user-select: none !important;     /* Firefox */
-    -ms-user-select: none !important;      /* IE10+ */
-    user-select: none !important;          /* Padrão moderno */
+// O bloqueio só ativa se NÃO for local (VS Code) E NÃO possuir a chave forte na URL
+if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
+
+    setInterval(function() {
+        const antes = new Date().getTime();
+        
+        debugger; // Congela a execução caso tentem abrir o console
+        
+        const depois = new Date().getTime();
+        
+        if (depois - antes > 100) {
+            document.body.innerHTML = `
+                <div style="
+                    height: 100vh; 
+                    display: flex; 
+                    flex-direction: column;
+                    align-items: center; 
+                    justify-content: center; 
+                    background: #0b1020; 
+                    color: #ffdf00; 
+                    font-family: 'Poppins', sans-serif;
+                    text-align: center;
+                    padding: 20px;
+                ">
+                    <h2>⚠️ Acesso Bloqueado</h2>
+                    <p style="color: #fff;">O uso das ferramentas de desenvolvedor é proibido neste portfólio.</p>
+                    <button onclick="window.location.reload()" style="
+                        background: #009c3b; 
+                        color: white; 
+                        border: none; 
+                        padding: 10px 20px; 
+                        border-radius: 5px; 
+                        cursor: pointer;
+                        margin-top: 15px;
+                    ">Recarregar Site</button>
+                </div>
+            `;
+        }
+    }, 1000);
+
 }

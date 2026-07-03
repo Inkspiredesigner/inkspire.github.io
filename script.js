@@ -278,21 +278,26 @@ window.addEventListener('focus', () => {
 
 
 // =======================================================
-// ANTI-INSPECIONAR PROTEGIDO COM CHAVE DE ADMINISTRADOR 🕵️‍♂️
+// ANTI-INSPECIONAR CORRIGIDO E SEGURO 🕵️‍♂️
 // =======================================================
 const urlParams = new URLSearchParams(window.location.search);
 
-// O bloqueio só ativa se NÃO for local (VS Code) E NÃO possuir a chave forte na URL
 if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
 
+    // Cria um objeto que monitora se o console tentou renderizar o ID dele
+    const devtools = { aberto: false };
+    const elementoItem = /./;
+    elementoItem.toString = function() {
+        devtools.aberto = true;
+    };
+
     setInterval(function() {
-        const antes = new Date().getTime();
-        
-        debugger; // Congela a execução caso tentem abrir o console
-        
-        const depois = new Date().getTime();
-        
-        if (depois - antes > 100) {
+        devtools.aberto = false;
+        // Tenta mandar o elemento pro console. Se o console estiver aberto, o toString() roda!
+        console.log(elementoItem);
+        console.clear(); // Limpa para o usuário não ver nada
+
+        if (devtools.aberto) {
             document.body.innerHTML = `
                 <div style="
                     height: 100vh; 
@@ -321,5 +326,4 @@ if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "lo
             `;
         }
     }, 1000);
-
 }

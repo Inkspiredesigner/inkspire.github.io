@@ -61,7 +61,7 @@ setTimeout(reveal, 200);
 
 
 // ==========================================
-// LÓGICA DO ÁLBUM COM TRANSICÃO E PONTINHOS
+// LÓGICA DO ÁLBUM DINÂMICA (AUTOMATIZADA)
 // ==========================================
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
@@ -78,18 +78,65 @@ if(lightbox) {
     lightbox.style.display = "none";
 }
 
+// Pré-carrega as imagens geradas para evitar lentidão ou telas brancas ao clicar
 function preCarregarImagens(listaImagens) {
     listaImagens.forEach((url) => {
         const imgFake = new Image();
-        imgFake.src = url.trim();
+        imgFake.src = url;
     });
 }
+
+// Função auxiliar interna para gerar o array de links baseado na pasta e no total
+function gerarListaImagens(pasta, total) {
+    let lista = [];
+    for (let i = 1; i <= total; i++) {
+        lista.push(`img/${pasta}-${i}.png`);
+    }
+    return lista;
+}
+
+// Executa o pré-carregamento automático de todos os cards assim que a página lê o script
+cardsPortfolio.forEach(card => {
+    const pasta = card.getAttribute("data-pasta");
+    const total = parseInt(card.getAttribute("data-total"));
+    
+    if (pasta && total) {
+        const listaDoCard = gerarListaImagens(pasta, total);
+        preCarregarImagens(listaDoCard);
+    }
+
+    // Evento de clique para abrir o Lightbox reconstruído
+    card.addEventListener("click", () => {
+        const pastaCard = card.getAttribute("data-pasta");
+        const totalCard = parseInt(card.getAttribute("data-total"));
+        
+        if (pastaCard && totalCard) {
+            // Cria a lista de fotos dinamicamente
+            imagensAlbum = gerarListaImagens(pastaCard, totalCard);
+            indexAtual = 0;
+            
+            gerarPontinhos();
+            mostrarImagem(indexAtual);
+            
+            lightbox.style.display = "flex";
+            setTimeout(() => {
+                lightbox.classList.add("ativo");
+            }, 10);
+            
+            document.body.style.overflow = "hidden";
+            
+            if (imagensAlbum.length > 1) {
+                iniciarSlideAutomatico();
+            }
+        }
+    });
+});
 
 function iniciarSlideAutomatico() {
     pararSlideAutomatico();
     temporizadorSlide = setInterval(() => {
         proximaImagem();
-    }, 3500); // Passa a foto a cada 3.5 segundos
+    }, 3500);
 }
 
 function pararSlideAutomatico() {
@@ -98,10 +145,9 @@ function pararSlideAutomatico() {
     }
 }
 
-// Cria os pontinhos de forma dinâmica baseada na quantidade de fotos
 function gerarPontinhos() {
-    dotsContainer.innerHTML = ""; // Limpa os antigos
-    if (imagensAlbum.length <= 1) return; // Se for só 1 imagem, não precisa de pontos
+    dotsContainer.innerHTML = ""; 
+    if (imagensAlbum.length <= 1) return;
 
     imagensAlbum.forEach((_, index) => {
         const dot = document.createElement("div");
@@ -122,47 +168,15 @@ function atualizarPontinhos() {
     });
 }
 
-cardsPortfolio.forEach(card => {
-    const albumData = card.getAttribute("data-album");
-    if (albumData) {
-        const fotosDoCard = albumData.split(",");
-        preCarregarImagens(fotosDoCard);
-    }
-
-    card.addEventListener("click", () => {
-        const dadosDoAlbum = card.getAttribute("data-album");
-        if (dadosDoAlbum) {
-            imagensAlbum = dadosDoAlbum.split(",");
-            indexAtual = 0;
-            
-            gerarPontinhos();
-            mostrarImagem(indexAtual);
-            
-            lightbox.style.display = "flex";
-            setTimeout(() => {
-                lightbox.classList.add("ativo");
-            }, 10);
-            
-            document.body.style.overflow = "hidden";
-            
-            if (imagensAlbum.length > 1) {
-                iniciarSlideAutomatico();
-            }
-        }
-    });
-});
-
 function mostrarImagem(index) {
     if(imagensAlbum[index]) {
-        // Tira a classe de visível para fazer o efeito de sumir (fade-out)
         lightboxImg.classList.remove("foto-visivel");
         
         setTimeout(() => {
-            lightboxImg.src = imagensAlbum[index].trim();
-            // Recarrega a classe para fazer a nova foto surgir (fade-in)
+            lightboxImg.src = imagensAlbum[index];
             lightboxImg.classList.add("foto-visivel");
             atualizarPontinhos();
-        }, 200); // Tempo rápido da piscada da transição
+        }, 200);
     }
 }
 
@@ -189,6 +203,7 @@ lightbox.addEventListener("click", (e) => {
 document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 });
+
 // ==========================================
 // ENVIO SEGURO E OCULTO DE FORMULÁRIO (AJAX)
 // ==========================================
@@ -197,15 +212,13 @@ const btnEnviarFeedback = document.getElementById("btn-enviar-feedback");
 
 if(formFeedback) {
     formFeedback.addEventListener("submit", function(e) {
-        e.preventDefault(); // Impede o redirecionamento bizarro da página
+        e.preventDefault(); 
         
-        // Desativa o botão temporariamente para evitar cliques repetidos (Double-Submit Attack)
         btnEnviarFeedback.disabled = true;
         btnEnviarFeedback.innerText = "Enviando com segurança...";
 
         const formData = new FormData(this);
         
-        // Endpoint ocultado e disparado de forma assíncrona pelo navegador
         fetch("https://formspree.io/f/mojzggeg", {
             method: "POST",
             body: formData,
@@ -218,7 +231,7 @@ if(formFeedback) {
                 btnEnviarFeedback.innerText = "✓ Avaliação Enviada!";
                 btnEnviarFeedback.style.background = "#25D366";
                 btnEnviarFeedback.style.boxShadow = "0 0 15px #25D366";
-                formFeedback.reset(); // Limpa os campos
+                formFeedback.reset(); 
             } else {
                 throw new Error('Erro no envio');
             }
@@ -230,3 +243,76 @@ if(formFeedback) {
         });
     });
 }
+// ==========================================
+// SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
+// ==========================================
+
+// 1. Bloquear teclas e atalhos perigosos de captura e inspeção
+document.addEventListener('keydown', function(e) {
+    // Bloqueia a tecla Print Screen isolada
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+        e.preventDefault();
+        alert("⚠️ Proteção Inkspire: Capturas de tela não são permitidas para proteger os direitos autorais dos projetos.");
+    }
+    
+    // Bloqueia Ctrl + P (Tentativa de imprimir/salvar página como PDF)
+    if (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
+        e.preventDefault();
+        alert("⚠️ Impressão bloqueada para proteção das artes.");
+    }
+
+    // Bloqueia Ctrl + Shift + I ou F12 (Inspecionar elemento para pegar links das imagens)
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
+        e.preventDefault();
+    }
+});
+
+// 2. Desfocar o site se o usuário mudar de janela ou tentar usar uma ferramenta externa
+window.addEventListener('blur', () => {
+    document.body.style.filter = 'blur(15px)'; // Deixa o site ilegível se perder o foco
+});
+
+window.addEventListener('focus', () => {
+    document.body.style.filter = 'none'; // Volta ao normal quando o usuário clica de volta no site
+});
+// ==========================================
+// ANTI-INSPECIONAR AVANÇADO (CONGELAR NAVEGADOR)
+// ==========================================
+setInterval(function() {
+    const antes = new Date().getTime();
+    
+    // O comando 'debugger' só é ativado se o console do Inspecionar estiver ABERTO
+    debugger; 
+    
+    const depois = new Date().getTime();
+    
+    // Se demorou mais de 100ms para rodar, significa que o Inspecionar pegou o debugger
+    if (depois - antes > 100) {
+        document.body.innerHTML = `
+            <div style="
+                height: 100vh; 
+                display: flex; 
+                flex-direction: column;
+                align-items: center; 
+                justify-content: center; 
+                background: #0b1020; 
+                color: #ffdf00; 
+                font-family: 'Poppins', sans-serif;
+                text-align: center;
+                padding: 20px;
+            ">
+                <h2>⚠️ Acesso Bloqueado</h2>
+                <p style="color: #fff;">O uso das ferramentas de desenvolvedor é proibido neste portfólio.</p>
+                <button onclick="window.location.reload()" style="
+                    background: #009c3b; 
+                    color: white; 
+                    border: none; 
+                    padding: 10px 20px; 
+                    border-radius: 5px; 
+                    cursor: pointer;
+                    margin-top: 15px;
+                ">Recarregar Site</button>
+            </div>
+        `;
+    }
+}, 1000); // Verifica a cada 1 segundo se o cara abriu o inspecionar

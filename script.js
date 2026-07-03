@@ -278,45 +278,21 @@ window.addEventListener('focus', () => {
 
 
 // =======================================================
-// ANTI-INSPECIONAR DEFINITIVO (À PROVA DE FALHAS EM CELULAR)
+// ANTI-INSPECIONAR DEFINITIVO (SEM FALSOS POSITIVOS DE TELA)
 // =======================================================
 const urlParams = new URLSearchParams(window.location.search);
 
-// Só ativa se NÃO for local (VS Code) E NÃO possuir a chave forte na URL
 if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
 
+    // Se o espertinho conseguir forçar o console a abrir, o script limpa os dados repetidamente
     setInterval(function() {
-        // Mede se a janela de código do Inspecionar está aberta devorando espaço na tela
-        const larguraConsole = window.outerWidth - window.innerWidth > 160;
-        const alturaConsole = window.outerHeight - window.innerHeight > 160;
-
-        if (larguraConsole || alturaConsole) {
-            document.body.innerHTML = `
-                <div style="
-                    height: 100vh; 
-                    display: flex; 
-                    flex-direction: column;
-                    align-items: center; 
-                    justify-content: center; 
-                    background: #0b1020; 
-                    color: #ffdf00; 
-                    font-family: 'Poppins', sans-serif;
-                    text-align: center;
-                    padding: 20px;
-                ">
-                    <h2>⚠️ Acesso Bloqueado</h2>
-                    <p style="color: #fff;">O uso das ferramentas de desenvolvedor é proibido neste portfólio.</p>
-                    <button onclick="window.location.reload()" style="
-                        background: #009c3b; 
-                        color: white; 
-                        border: none; 
-                        padding: 10px 20px; 
-                        border-radius: 5px; 
-                        cursor: pointer;
-                        margin-top: 15px;
-                    ">Recarregar Site</button>
-                </div>
-            `;
-        }
+        console.clear();
     }, 1000);
+
+    // Impede que tentem burlar os logs do console criando travas de leitura
+    Object.defineProperty(window, 'console', {
+        value: window.console,
+        writable: false,
+        configurable: false
+    });
 }

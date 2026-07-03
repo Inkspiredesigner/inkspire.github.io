@@ -250,7 +250,7 @@ if(formFeedback) {
 // SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
 // ==========================================
 
-// 1. Bloquear teclas e atalhos perigosos de captura e inspeção
+// 1. Bloquear teclas e atalhos de captura e inspeção rápida
 document.addEventListener('keydown', function(e) {
     if (e.key === "PrintScreen" || e.keyCode === 44) {
         e.preventDefault();
@@ -267,7 +267,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// 2. Desfocar o site se o usuário mudar de janela ou tentar usar uma ferramenta externa
+// 2. Desfocar o site se o usuário mudar de janela ou tentar usar ferramentas externas
 window.addEventListener('blur', () => {
     document.body.style.filter = 'blur(15px)';
 });
@@ -278,26 +278,19 @@ window.addEventListener('focus', () => {
 
 
 // =======================================================
-// ANTI-INSPECIONAR CORRIGIDO E SEGURO 🕵️‍♂️
+// ANTI-INSPECIONAR DEFINITIVO (À PROVA DE FALHAS EM CELULAR)
 // =======================================================
 const urlParams = new URLSearchParams(window.location.search);
 
+// Só ativa se NÃO for local (VS Code) E NÃO possuir a chave forte na URL
 if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
 
-    // Cria um objeto que monitora se o console tentou renderizar o ID dele
-    const devtools = { aberto: false };
-    const elementoItem = /./;
-    elementoItem.toString = function() {
-        devtools.aberto = true;
-    };
-
     setInterval(function() {
-        devtools.aberto = false;
-        // Tenta mandar o elemento pro console. Se o console estiver aberto, o toString() roda!
-        console.log(elementoItem);
-        console.clear(); // Limpa para o usuário não ver nada
+        // Mede se a janela de código do Inspecionar está aberta devorando espaço na tela
+        const larguraConsole = window.outerWidth - window.innerWidth > 160;
+        const alturaConsole = window.outerHeight - window.innerHeight > 160;
 
-        if (devtools.aberto) {
+        if (larguraConsole || alturaConsole) {
             document.body.innerHTML = `
                 <div style="
                     height: 100vh; 

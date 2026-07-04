@@ -247,6 +247,49 @@ if(formFeedback) {
 
 
 // ==========================================
+// EFEITO DE INTERAÇÃO COM EMOJIS (CLIQUE ESQUERDO) 🖐️😜🤚
+// ==========================================
+document.addEventListener('click', (e) => {
+    // Evita disparar o efeito se clicar em botões, links ou cards para não atrapalhar a navegação pura
+    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.card') || e.target.closest('.fechar-lightbox')) {
+        return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    const emojis = ['🖐️', '😜', '🤚'];
+
+    emojis.forEach((emoji, index) => {
+        const elemento = document.createElement('div');
+        elemento.innerText = emoji;
+        
+        elemento.style.position = 'fixed';
+        elemento.style.left = `${x}px`;
+        elemento.style.top = `${y}px`;
+        elemento.style.fontSize = '32px';
+        elemento.style.pointerEvents = 'none';
+        elemento.style.zIndex = '999999';
+        elemento.style.transition = 'all 0.6s ease-out';
+        
+        document.body.appendChild(elemento);
+
+        // Faz os emojis se espalharem em direções diferentes a partir do ponto do clique
+        const direcaoX = (index - 1) * 45 + (Math.random() * 20 - 10);
+        const direcaoY = -80 - (Math.random() * 30);
+
+        setTimeout(() => {
+            elemento.style.transform = `translate(${direcaoX}px, ${direcaoY}px) scale(1.4)`;
+            elemento.style.opacity = '0';
+        }, 30);
+
+        setTimeout(() => {
+            elemento.remove();
+        }, 650);
+    });
+});
+
+
+// ==========================================
 // SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
 // ==========================================
 

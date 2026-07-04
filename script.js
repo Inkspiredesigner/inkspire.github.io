@@ -200,10 +200,6 @@ lightbox.addEventListener("click", (e) => {
     if (e.target === lightbox || e.target.classList.contains('lightbox-content')) fecharAlbum();
 });
 
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-});
-
 
 // ==========================================
 // ENVIO SEGURO E OCULTO DE FORMULÁRIO (AJAX)
@@ -246,28 +242,95 @@ if(formFeedback) {
 }
 
 
-// ==========================================
-// SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
-// ==========================================
+// =======================================================
+// FUNÇÃO ZOEIRA: ESTOURO DE EMOJIS DE DEBOCHE 🖐️😜🤚
+// =======================================================
+function soltarDeboche(e) {
+    // Pega a posição do mouse ou usa o centro da tela se disparado por teclado
+    const x = e && e.clientX ? e.clientX : window.innerWidth / 2;
+    const y = e && e.clientY ? e.clientY : window.innerHeight / 2;
 
-// 1. Bloquear teclas e atalhos de captura e inspeção rápida
-document.addEventListener('keydown', function(e) {
-    if (e.key === "PrintScreen" || e.keyCode === 44) {
-        e.preventDefault();
-        alert("⚠️ Proteção Inkspire: Capturas de tela não são permitidas para proteger os direitos autorais dos projetos.");
-    }
-    
-    if (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
-        e.preventDefault();
-        alert("⚠️ Impressão bloqueada para proteção das artes.");
-    }
+    const emojis = ['🖐️', '😜', '🤚'];
 
-    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
-        e.preventDefault();
-    }
-});
+    emojis.forEach((emoji, index) => {
+        const elemento = document.createElement('div');
+        elemento.innerText = emoji;
+        
+        elemento.style.position = 'fixed';
+        elemento.style.left = `${x}px`;
+        elemento.style.top = `${y}px`;
+        elemento.style.fontSize = '40px';
+        elemento.style.pointerEvents = 'none';
+        elemento.style.zIndex = '999999';
+        elemento.style.transition = 'all 0.8s ease-out';
+        
+        document.body.appendChild(elemento);
 
-// 2. Desfocar o site se o usuário mudar de janela ou tentar usar ferramentas externas
+        // Direção calculada para espalhar as mãos para os lados e o rosto para o meio
+        const direcaoX = (index - 1) * 55 + (Math.random() * 20 - 10);
+        const direcaoY = -120 - (Math.random() * 40);
+
+        setTimeout(() => {
+            elemento.style.transform = `translate(${direcaoX}px, ${direcaoY}px) scale(1.6)`;
+            elemento.style.opacity = '0';
+        }, 50);
+
+        setTimeout(() => {
+            elemento.remove();
+        }, 850);
+    });
+}
+
+
+// =======================================================
+// SISTEMA DE SEGURANÇA E BLOQUEIOS ATIVOS
+// =======================================================
+
+const urlParams = new URLSearchParams(window.location.search);
+
+// Só aplica as restrições e zoeiras se NÃO for ambiente local E NÃO tiver a chave mestra
+if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
+
+    // 1. Bloquear cliques de botão direito em todo o documento
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        soltarDeboche(e);
+    });
+
+    // 2. Interceptação de Hardware (Teclado)
+    document.addEventListener('keydown', function(e) {
+        // Bloqueia PrintScreen
+        if (e.key === "PrintScreen" || e.keyCode === 44) {
+            e.preventDefault();
+            soltarDeboche(e);
+        }
+        
+        // Bloqueia Ctrl + P (Salvar/Imprimir)
+        if (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
+            e.preventDefault();
+            soltarDeboche(e);
+        }
+
+        // Bloqueia F12 e combinações de inspeção (Ctrl+Shift+I, C, J)
+        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
+            e.preventDefault();
+            soltarDeboche(e);
+        }
+    });
+
+    // 3. Monitoramento e Limpeza Contínua do Console
+    setInterval(function() {
+        console.clear();
+    }, 1000);
+
+    Object.defineProperty(window, 'console', {
+        value: window.console,
+        writable: false,
+        configurable: false
+    });
+}
+
+// 4. Efeito Desfocar Viewport (Funciona sempre para proteção de assets)
 window.addEventListener('blur', () => {
     document.body.style.filter = 'blur(15px)';
 });
@@ -275,24 +338,3 @@ window.addEventListener('blur', () => {
 window.addEventListener('focus', () => {
     document.body.style.filter = 'none';
 });
-
-
-// =======================================================
-// ANTI-INSPECIONAR DEFINITIVO (SEM FALSOS POSITIVOS DE TELA)
-// =======================================================
-const urlParams = new URLSearchParams(window.location.search);
-
-if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
-
-    // Se o espertinho conseguir forçar o console a abrir, o script limpa os dados repetidamente
-    setInterval(function() {
-        console.clear();
-    }, 1000);
-
-    // Impede que tentem burlar os logs do console criando travas de leitura
-    Object.defineProperty(window, 'console', {
-        value: window.console,
-        writable: false,
-        configurable: false
-    });
-}

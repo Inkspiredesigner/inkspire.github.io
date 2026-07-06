@@ -1197,3 +1197,154 @@ body {
     font-size: 12px;
     z-index: 100002;
 }
+/* ==========================================
+   ESTILIZAÇÃO DA SEÇÃO DE DEPOIMENTOS
+   ========================================== */
+.depoimentos {
+    padding: 80px 0;
+    background-color: #0b1020; /* Mantém o fundo escuro padrão */
+}
+
+.titulo-sessao {
+    text-align: center;
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 50px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.titulo-sessao span {
+    color: #ffdf00; /* Destaque em amarelo ouro */
+}
+
+.grid-depoimentos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 10px;
+}
+
+.card-depoimento {
+    background: rgba(18, 24, 41, 0.6);
+    border: 1px solid #1e2640;
+    border-radius: 12px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+}
+
+/* Efeito Glow discreto ao passar o mouse por cima do depoimento */
+.card-depoimento:hover {
+    transform: translateY(-5px);
+    border-color: #ffdf00;
+    box-shadow: 0 10px 25px rgba(255, 223, 0, 0.1);
+}
+
+.topo-depoimento {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.info-cliente {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.info-cliente .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-color: #1e2640; /* Fundo reserva se não houver foto */
+    border: 2px solid #009c3b; /* Borda verde style Brasil */
+}
+
+.info-cliente h3 {
+    color: #ffffff;
+    font-size: 16px;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.info-cliente span {
+    color: #a0aec0;
+    font-size: 13px;
+    display: block;
+}
+
+.estrelas {
+    color: #ffdf00;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.card-depoimento p {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    text-align: justify;
+    font-style: italic;
+}
+
+/* Ajustes de Responsividade para Celulares */
+@media screen and (max-width: 768px) {
+    .titulo-sessao {
+        font-size: 28px;
+    }
+    .grid-depoimentos {
+        grid-template-columns: 1fr; /* Um card por linha no celular */
+        gap: 20px;
+    }
+}
+.card-print {
+    padding: 20px !important;
+}
+
+.avatar-whats {
+    width: 40px;
+    height: 40px;
+    background: #25D366; /* Verde do WhatsApp */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 10px rgba(37, 211, 102, 0.3);
+}
+
+.container-print {
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #1e2640;
+    background: #070d19;
+}
+
+.print-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+/* Efeito sutil de zoom no print quando o mouse passa por cima */
+.card-depoimento:hover .print-img {
+    transform: scale(1.02);
+}
+/* Garante o formato redondo e perfeito para as fotos de perfil das empresas */
+.info-cliente .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-color: #1e2640; /* Fundo reserva caso a imagem demore a carregar */
+    border: 2px solid #009c3b; /* Borda verde premium */
+    flex-shrink: 0; /* Impede que o navegador amasse a foto em telas menores */
+}

@@ -61,24 +61,19 @@ setTimeout(reveal, 200);
 
 
 // ==========================================
-// LÓGICA DO ÁLBUM DINÂMICA (AUTOMATIZADA)
+// LÓGICA DO ÁLBUM EM GRID (3 COLUNAS)
 // ==========================================
 const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const btnFechar = document.querySelector(".fechar-lightbox");
-const dotsContainer = document.getElementById("dots-container");
 const cardsPortfolio = document.querySelectorAll(".card");
-
-let imagensAlbum = [];
-let indexAtual = 0;
-let temporizadorSlide = null;
+const btnFechar = document.querySelector(".fechar-lightbox");
+const lightboxContent = document.querySelector(".lightbox-content");
 
 if(lightbox) {
     lightbox.classList.remove("ativo");
     lightbox.style.display = "none";
 }
 
-// Pré-carrega as imagens geradas para evitar lentidão ou telas brancas ao clicar
+// Pré-carrega as imagens para evitar telas brancas
 function preCarregarImagens(listaImagens) {
     listaImagens.forEach((url) => {
         const imgFake = new Image();
@@ -86,7 +81,7 @@ function preCarregarImagens(listaImagens) {
     });
 }
 
-// Função auxiliar interna para gerar o array de links baseado na pasta e no total
+// Gera a lista de links baseado na sua pasta (ex: img/projeto1-1.png)
 function gerarListaImagens(pasta, total) {
     let lista = [];
     for (let i = 1; i <= total; i++) {
@@ -95,7 +90,7 @@ function gerarListaImagens(pasta, total) {
     return lista;
 }
 
-// Executa o pré-carregamento automático de todos os cards assim que a página lê o script
+// Pré-carregamento automático baseado nos atributos do HTML
 cardsPortfolio.forEach(card => {
     const pasta = card.getAttribute("data-pasta");
     const total = parseInt(card.getAttribute("data-total"));
@@ -105,100 +100,67 @@ cardsPortfolio.forEach(card => {
         preCarregarImagens(listaDoCard);
     }
 
-    // Evento de clique para abrir o Lightbox reconstruído
+    // Clique para abrir o Grid 3x3
     card.addEventListener("click", () => {
         const pastaCard = card.getAttribute("data-pasta");
         const totalCard = parseInt(card.getAttribute("data-total"));
         
-        if (pastaCard && totalCard) {
-            // Cria a lista de fotos dinamicamente
-            imagensAlbum = gerarListaImagens(pastaCard, totalCard);
-            indexAtual = 0;
+        if (pastaCard && totalCard && lightboxContent) {
+            const imagensAlbum = gerarListaImagens(pastaCard, totalCard);
             
-            gerarPontinhos();
-            mostrarImagem(indexAtual);
+            // Limpa as imagens antigas do container
+            lightboxContent.innerHTML = "";
+            
+            // Injeta as imagens reais da pasta
+            imagensAlbum.forEach((url) => {
+                const novaImg = document.createElement("img");
+                novaImg.src = url;
+                novaImg.classList.add("galeria-img");
+                
+                novaImg.style.opacity = "0";
+                novaImg.style.transition = "opacity 0.4s ease-in-out";
+                
+                lightboxContent.appendChild(novaImg);
+                
+                setTimeout(() => {
+                    novaImg.style.opacity = "1";
+                }, 50);
+            });
             
             lightbox.style.display = "flex";
+            lightbox.style.overflowY = "auto"; 
+            
             setTimeout(() => {
                 lightbox.classList.add("ativo");
             }, 10);
             
             document.body.style.overflow = "hidden";
-            
-            if (imagensAlbum.length > 1) {
-                iniciarSlideAutomatico();
-            }
         }
     });
 });
-
-function iniciarSlideAutomatico() {
-    pararSlideAutomatico();
-    temporizadorSlide = setInterval(() => {
-        proximaImagem();
-    }, 3500);
-}
-
-function pararSlideAutomatico() {
-    if (temporizadorSlide) {
-        clearInterval(temporizadorSlide);
-    }
-}
-
-function gerarPontinhos() {
-    dotsContainer.innerHTML = ""; 
-    if (imagensAlbum.length <= 1) return;
-
-    imagensAlbum.forEach((_, index) => {
-        const dot = document.createElement("div");
-        dot.classList.add("dot");
-        if (index === indexAtual) dot.classList.add("dot-ativo");
-        dotsContainer.appendChild(dot);
-    });
-}
-
-function atualizarPontinhos() {
-    const dots = dotsContainer.querySelectorAll(".dot");
-    dots.forEach((dot, index) => {
-        if (index === indexAtual) {
-            dot.classList.add("dot-ativo");
-        } else {
-            dot.classList.remove("dot-ativo");
-        }
-    });
-}
-
-function mostrarImagem(index) {
-    if(imagensAlbum[index]) {
-        lightboxImg.classList.remove("foto-visivel");
-        
-        setTimeout(() => {
-            lightboxImg.src = imagensAlbum[index];
-            lightboxImg.classList.add("foto-visivel");
-            atualizarPontinhos();
-        }, 200);
-    }
-}
-
-function proximaImagem() {
-    indexAtual = (indexAtual + 1) % imagensAlbum.length;
-    mostrarImagem(indexAtual);
-}
 
 function fecharAlbum() {
-    pararSlideAutomatico();
-    lightbox.classList.remove("ativo");
-    lightboxImg.classList.remove("foto-visivel");
-    setTimeout(() => {
-        lightbox.style.display = "none";
-    }, 300);
-    document.body.style.overflow = "auto";
+    if (lightbox) {
+        lightbox.classList.remove("ativo");
+        setTimeout(() => {
+            lightbox.style.display = "none";
+            if (lightboxContent) lightboxContent.innerHTML = "";
+        }, 300);
+        document.body.style.overflow = "auto";
+    }
 }
 
-btnFechar.addEventListener("click", fecharAlbum);
-lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox || e.target.classList.contains('lightbox-content')) fecharAlbum();
-});
+if(btnFechar) {
+    btnFechar.addEventListener("click", fecharAlbum);
+}
+
+if(lightbox) {
+    lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+            fecharAlbum();
+        }
+    });
+}
 
 document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -206,7 +168,7 @@ document.addEventListener('contextmenu', (e) => {
 
 
 // ==========================================
-// ENVIO SEGURO E OCULTO DE FORMULÁRIO (AJAX)
+// ENVIO SEGURO DE FORMULÁRIO (AJAX)
 // ==========================================
 const formFeedback = document.getElementById("feedback-form");
 const btnEnviarFeedback = document.getElementById("btn-enviar-feedback");
@@ -247,11 +209,10 @@ if(formFeedback) {
 
 
 // ==========================================
-// EFEITO DE INTERAÇÃO COM EMOJIS (CLIQUE ESQUERDO) 🖐️😜🤚
+// INTERAÇÃO COM EMOJIS (Neymar 🖐️😜?)
 // ==========================================
 document.addEventListener('click', (e) => {
-    // Evita disparar o efeito se clicar em botões, links ou cards para não atrapalhar a navegação pura
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.card') || e.target.closest('.fechar-lightbox')) {
+    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.card') || e.target.closest('.fechar-lightbox') || e.target.closest('.galeria-img')) {
         return;
     }
 
@@ -273,7 +234,6 @@ document.addEventListener('click', (e) => {
         
         document.body.appendChild(elemento);
 
-        // Faz os emojis se espalharem em direções diferentes a partir do ponto do clique
         const direcaoX = (index - 1) * 45 + (Math.random() * 20 - 10);
         const direcaoY = -80 - (Math.random() * 30);
 
@@ -290,29 +250,46 @@ document.addEventListener('click', (e) => {
 
 
 // ==========================================
-// SISTEMA DE SEGURANÇA ANTI-PRINT E PROTEÇÃO
+// SISTEMA DE SEGURANÇA ANTI-PRINT AVANÇADO
 // ==========================================
-
-// 1. Bloquear teclas e atalhos de captura e inspeção rápida
 document.addEventListener('keydown', function(e) {
+    // Se apertar PrintScreen (Key 44)
     if (e.key === "PrintScreen" || e.keyCode === 44) {
         e.preventDefault();
-        alert("⚠️ Proteção Inkspire: Capturas de tela não são permitidas para proteger os direitos autorais dos projetos.");
+        
+        // 🔒 ESTRELA O PRINT: Força a tela a ficar preta instantaneamente para estragar a captura
+        const capaPreta = document.createElement("div");
+        capaPreta.style.position = "fixed";
+        capaPreta.style.top = "0";
+        capaPreta.style.left = "0";
+        capaPreta.style.width = "100vw";
+        capaPreta.style.height = "100vh";
+        capaPreta.style.background = "#04070f";
+        capaPreta.style.zIndex = "99999999";
+        document.body.appendChild(capaPreta);
+        
+        alert("⚠️ Proteção Inkspire: Capturas de tela não são permitidas para proteger os direitos autorais dos uniformes.");
+        
+        // Remove a tela preta depois que ele fechar o alerta
+        setTimeout(() => { capaPreta.remove(); }, 1000);
     }
     
+    // Bloqueia Ctrl + P (Impressão / Salvar como PDF)
     if (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.keyCode === 80)) {
         e.preventDefault();
-        alert("⚠️ Impressão bloqueada para proteção das artes.");
+        alert("⚠️ Download ou cópia oculta bloqueada.");
     }
 
+    // Bloqueia F12 e Inspect
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J'))) {
         e.preventDefault();
     }
 });
 
-// 2. Desfocar o site se o usuário mudar de janela ou tentar usar ferramentas externas
+// Se ele tentar usar programas externos (tipo Lightshot ou a Ferramenta de Captura do Windows)
+// O navegador perde o foco ('blur'). Quando isso ocorre, nós borramos tudo!
 window.addEventListener('blur', () => {
-    document.body.style.filter = 'blur(15px)';
+    document.body.style.filter = 'blur(30px)'; // Borrão ultra pesado para ninguém ver nada de fundo
 });
 
 window.addEventListener('focus', () => {
@@ -320,19 +297,16 @@ window.addEventListener('focus', () => {
 });
 
 
-// =======================================================
-// ANTI-INSPECIONAR DEFINITIVO (SEM FALSOS POSITIVOS DE TELA)
-// =======================================================
+// ==========================================
+// ANTI-INSPECIONAR DEFINITIVO
+// ==========================================
 const urlParams = new URLSearchParams(window.location.search);
 
 if (window.location.hostname !== "127.0.0.1" && window.location.hostname !== "localhost" && !urlParams.has('inkspire-master-2026')) {
-
-    // Se o espertinho conseguir forçar o console a abrir, o script limpa os dados repetidamente
     setInterval(function() {
         console.clear();
     }, 1000);
 
-    // Impede que tentem burlar os logs do console criando travas de leitura
     Object.defineProperty(window, 'console', {
         value: window.console,
         writable: false,

@@ -1348,3 +1348,125 @@ body {
     border: 2px solid #009c3b; /* Borda verde premium */
     flex-shrink: 0; /* Impede que o navegador amasse a foto em telas menores */
 }
+/* ==========================================
+   ESTILIZAÇÃO DO LIGHTBOX EM GRID (3 COLUNAS)
+   ========================================== */
+#lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100% !important;
+    background: rgba(4, 7, 15, 0.96); /* Fundo escuro premium */
+    z-index: 999999;
+    
+    /* MUDANÇA CRUCIAL: Remove o flex daqui para o topo nunca mais ser cortado */
+    display: none; 
+    overflow-y: auto !important; /* Ativa a rolagem vertical perfeitamente */
+    scroll-behavior: smooth;
+}
+
+/* Quando ativo, ele apenas aparece na tela, sem forçar centralização vertical */
+#lightbox.ativo {
+    display: block !important;
+}
+
+/* Container interno estruturado em Grid estável */
+.lightbox-content {
+    max-width: 1100px; 
+    width: 100%;
+    
+    /* Centraliza o bloco na horizontal e desgruda do topo com o padding */
+    margin: 0 auto !important; 
+    padding: 120px 20px 80px 20px !important; 
+    box-sizing: border-box;
+
+    /* Configuração do Grid de 3 Colunas */
+    display: grid !important; 
+    grid-template-columns: repeat(3, 1fr) !important; 
+    grid-auto-rows: minmax(auto, max-content) !important; 
+    gap: 25px; 
+    
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Estilo das fotos dentro do álbum */
+.galeria-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    border: 1px solid #1e2640;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito ao passar o mouse nas fotos */
+.galeria-img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 156, 59, 0.2);
+}
+
+/* Botão de fechar fixo no topo direito para nunca sumir */
+.fechar-lightbox {
+    position: fixed;
+    top: 25px;
+    right: 35px;
+    font-size: 42px;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 1000000;
+    transition: color 0.2s, transform 0.2s;
+    line-height: 1;
+}
+
+.fechar-lightbox:hover {
+    color: #ff007f;
+    transform: scale(1.1);
+}
+
+/* RESPONSIVIDADE (Tablets e Celulares) */
+@media screen and (max-width: 992px) {
+    .lightbox-content {
+        grid-template-columns: repeat(2, 1fr) !important;
+        padding-top: 100px !important;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .lightbox-content {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+        padding-top: 90px !important;
+    }
+    .fechar-lightbox {
+        top: 20px;
+        right: 20px;
+        font-size: 32px;
+    }
+}
+/* ==========================================
+   ARMADILHA ANTI-PRINT COMPLETA (BLACKOUT)
+   ========================================== */
+
+/* Quando o lightbox está ativo, criamos uma lona preta invisível de fundo */
+#lightbox.ativo {
+    background: #04070f !important; /* Força o fundo a ser totalmente opaco */
+}
+
+/* O PULO DO GATO: Se o Windows congelar a página ou o mouse perder o foco do Grid por 1 milissegundo, 
+   todas as imagens ganham um borrão ultra pesado e opacidade quase zero instantaneamente */
+.lightbox-content:not(:hover) .galeria-img,
+#lightbox:not(:hover) .galeria-img {
+    filter: blur(50px) !important;
+    opacity: 0.03 !important;
+    transform: scale(0.95);
+    transition: filter 0.05s ease, opacity 0.05s ease !important; /* Velocidade extrema */
+}
+
+/* Se o usuário tentar tirar o mouse do navegador para ir nas ferramentas do Windows */
+html:not(:hover) .lightbox-content {
+    opacity: 0 !important;
+    display: none !important;
+}

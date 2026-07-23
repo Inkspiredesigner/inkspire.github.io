@@ -207,48 +207,6 @@ if(formFeedback) {
     });
 }
 
-
-// ==========================================
-// INTERAÇÃO COM EMOJIS (Neymar 🖐️😜?)
-// ==========================================
-document.addEventListener('click', (e) => {
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.card') || e.target.closest('.fechar-lightbox') || e.target.closest('.galeria-img')) {
-        return;
-    }
-
-    const x = e.clientX;
-    const y = e.clientY;
-    const emojis = ['🖐️', '😜', '🤚'];
-
-    emojis.forEach((emoji, index) => {
-        const elemento = document.createElement('div');
-        elemento.innerText = emoji;
-        
-        elemento.style.position = 'fixed';
-        elemento.style.left = `${x}px`;
-        elemento.style.top = `${y}px`;
-        elemento.style.fontSize = '32px';
-        elemento.style.pointerEvents = 'none';
-        elemento.style.zIndex = '999999';
-        elemento.style.transition = 'all 0.6s ease-out';
-        
-        document.body.appendChild(elemento);
-
-        const direcaoX = (index - 1) * 45 + (Math.random() * 20 - 10);
-        const direcaoY = -80 - (Math.random() * 30);
-
-        setTimeout(() => {
-            elemento.style.transform = `translate(${direcaoX}px, ${direcaoY}px) scale(1.4)`;
-            elemento.style.opacity = '0';
-        }, 30);
-
-        setTimeout(() => {
-            elemento.remove();
-        }, 650);
-    });
-});
-
-
 // ==========================================
 // SISTEMA DE SEGURANÇA ANTI-PRINT AVANÇADO
 // ==========================================

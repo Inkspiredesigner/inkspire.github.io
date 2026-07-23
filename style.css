@@ -1100,61 +1100,7 @@ nav a::after {
     z-index: -1 !important; /* Joga o reflexo para trás do texto, brilhando apenas no fundo do botão */
     mix-blend-mode: overlay; /* Deixa o brilho misturado de forma suave com o amarelo */
 }
-/* =======================================================
-   EASTER EGG: MODO ADULTO NEY ATIVADO 🇧🇷👑
-   ======================================================= */
 
-/* 1. Efeito na sua foto: Passou o mouse, vira a faixa do Ney */
-.foto-wrapper {
-    perspective: 1000px; /* Cria profundidade 3D */
-    transition: transform 0.6s ease-in-out;
-}
-
-.foto-wrapper:hover {
-    transform: rotateY(180deg); /* Gira a foto de lado */
-}
-
-/* Criando a faixa "100% Jesus" escondida atrás da sua foto */
-.foto-wrapper::after {
-    content: "100% JESUS";
-    position: absolute;
-    inset: 4px;
-    background: #0b1020;
-    border-radius: 26px;
-    color: #ffdf00;
-    font-weight: 800;
-    font-size: 24px;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-shadow: 0 0 15px #ffdf00;
-    transform: rotateY(180deg); /* Já começa invertida atrás */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 2;
-}
-
-/* Mostra a faixa quando o mouse está em cima */
-.foto-wrapper:hover::after {
-    opacity: 1;
-}
-
-/* 2. Frase icônica flutuando perto do botão do WhatsApp do contato */
-#contato::after {
-    content: "“O pai tá on e roteando.” ⚡";
-    display: block;
-    margin-top: 15px;
-    color: #bdbdbd;
-    font-style: italic;
-    font-size: 14px;
-    animation: bounceNey 2s ease-in-out infinite;
-}
-
-@keyframes bounceNey {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); color: #ffdf00; }
-}
 /* =======================================================
    BLINDAGEM DE CONTEÚDO (ANTI-SELEÇÃO E ANTI-ARRASTE)
    ======================================================= */

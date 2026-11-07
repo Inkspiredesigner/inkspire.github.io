@@ -1241,3 +1241,41 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
         height: 260px;
     }
 }
+/* ==========================================
+   CORREÇÃO DOS DEPOIMENTOS E PRINTS NO MOBILE
+   ========================================== */
+.card-depoimento {
+    overflow: hidden !important;
+    word-break: break-word;
+}
+
+/* Garante que qualquer imagem ou print dentro do depoimento se ajuste ao cartão */
+.card-depoimento img {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 14px;
+    display: block;
+}
+
+/* Ajuste proporcional para ecrãs de telemóvel */
+@media (max-width: 768px) {
+    .depoimentos {
+        padding: 50px 4%;
+    }
+
+    .grid-depoimentos {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .card-depoimento {
+        padding: 16px;
+    }
+
+    .card-depoimento p, 
+    .card-depoimento span {
+        font-size: 14px !important;
+        line-height: 1.5;
+    }
+}

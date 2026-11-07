@@ -66,7 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const artes = [
             { img: "img/projeto1-1.png", title: "Uniforme Esportivo", subtitle: "Identidade Visual" },
             { img: "img/projeto2-2.png", title: "Campanhas Social Media", subtitle: "Social Media Design" },
-            { img: "img/projeto3-1.png", title: "Artes Católicas", subtitle: "Divulgação & Eventos" }
+            { img: "img/projeto3-1.png", title: "Artes Católicas", subtitle: "Divulgação & Eventos" },
+            { img: "img/projeto4-1.png", title: "Flyer Esportivo", subtitle: "Design de Material Promocional" }
+
         ];
 
         let indexArt = 0;

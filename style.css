@@ -5,6 +5,13 @@
     font-family: 'Poppins', sans-serif;
 }
 
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important; /* Bloqueia qualquer rolagem para os lados */
+    position: relative;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -12,7 +19,6 @@ html {
 body {
     background: #050811;
     color: #ffffff;
-    overflow-x: hidden;
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
     -ms-user-select: none !important;

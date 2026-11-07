@@ -390,11 +390,12 @@ nav a:hover::after {
     background: #0066ff;
 }
 
-/* MÉTRICAS */
+/* MÉTRICAS (LARGURA UNIFORME) */
 .numeros {
     display: flex;
     justify-content: center;
-    gap: 25px;
+    align-items: center;
+    gap: 20px;
     padding: 50px 6%;
     flex-wrap: wrap;
 }
@@ -402,10 +403,12 @@ nav a:hover::after {
 .numero-card {
     background: #090e1a;
     border: 1px solid rgba(0, 212, 255, 0.18);
-    padding: 30px 45px;
+    padding: 30px 20px;
     border-radius: 24px;
     text-align: center;
-    min-width: 220px;
+    width: 100%;
+    max-width: 280px; /* Garante que os 3 cartões tenham exatamente a mesma largura */
+    box-sizing: border-box;
     transition: all 0.3s ease;
 }
 
@@ -427,6 +430,16 @@ nav a:hover::after {
     font-size: 14px;
 }
 
+@media (max-width: 768px) {
+    .numeros {
+        padding: 35px 4%;
+        gap: 16px;
+    }
+
+    .numero-card {
+        max-width: 290px;
+    }
+}
 /* SOBRE MIM */
 .sobre {
     padding: 80px 6%;

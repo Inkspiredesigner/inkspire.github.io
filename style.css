@@ -158,7 +158,7 @@ nav a:hover::after {
     -webkit-text-fill-color: transparent;
 }
 
-/* CARTÃO PRINCIPAL */
+/* CARTÃO PRINCIPAL (DESKTOP) */
 .nexora-main-card {
     width: 100%;
     max-width: 1200px;
@@ -681,7 +681,7 @@ nav a:hover::after {
 }
 
 .fan-dot {
-    width: 100px;
+    width: 10px;
     height: 10px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
@@ -692,7 +692,7 @@ nav a:hover::after {
 
 .fan-dot.active {
     background: #00d4ff;
-    width: 28px;
+    width: 26px;
     border-radius: 10px;
 }
 
@@ -1086,16 +1086,24 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
 
 @media (max-width: 992px) {
     .hero-nexora {
-        padding: 100px 4% 40px 4%;
+        padding: 90px 4% 30px 4%;
         min-height: auto;
     }
 
+    .nexora-title-wrapper {
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* CARTÃO AZUL ULTRA COMPACTO E FOCADO EM CONVERSÃO */
     .nexora-main-card {
         grid-template-columns: 1fr;
-        padding: 30px 20px;
-        gap: 25px;
+        padding: 32px 20px;
+        gap: 22px;
         text-align: center;
         border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(0, 180, 255, 0.25);
     }
 
     .nexora-card-left {
@@ -1105,37 +1113,24 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
     }
 
     .nexora-card-left h2 {
-        font-size: 26px;
+        font-size: 24px;
+        line-height: 1.3;
     }
 
     .nexora-card-left p {
         font-size: 14px;
+        line-height: 1.6;
     }
 
-    /* CORREÇÃO DO ESPAÇO AZUL VAZIO NO TELEMÓVEL */
-    .nexora-card-center {
-        min-height: auto !important;
-        height: auto !important;
-        margin: 10px 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .nexora-btn-primary {
+        padding: 13px 26px;
+        font-size: 14px;
     }
 
-    .nexora-hero-person-cutout {
-        height: 350px !important;
-        width: auto !important;
-        position: relative !important;
-        bottom: 0 !important;
-        left: auto !important;
-        transform: none !important;
-        margin: 0 auto !important;
-        display: block;
-        filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5));
-    }
-
-    .nexora-main-card:hover .nexora-hero-person-cutout {
-        transform: scale(1.02) !important;
+    /* OCULTA A FOTO CUTOUT E O MINI-CARD NO MOBILE PARA EVITAR TORRE AZUL VAZIA */
+    .nexora-card-center,
+    .nexora-mini-card {
+        display: none !important;
     }
 
     .nexora-card-right {
@@ -1145,22 +1140,22 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
 
     .nexora-features {
         justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 
-    .nexora-mini-card {
-        max-width: 100%;
-    }
-
+    /* SOBRE MIM MOBILE */
     .sobre-card {
         flex-direction: column;
         text-align: center;
         padding: 30px 20px;
-        gap: 30px;
+        gap: 25px;
     }
 
     .foto-wrapper img {
-        width: 220px;
-        height: 290px;
+        width: 210px;
+        height: 280px;
     }
 
     .sobre-tags {
@@ -1186,23 +1181,23 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
 
     nav.ativo { display: flex; }
 
-    /* CORREÇÃO DO MODAL LEQUE EM TELEMÓVEIS */
+    /* MODAL LEQUE EM TELEMÓVEIS */
     .lightbox {
-        padding: 50px 8px 15px 8px;
+        padding: 40px 10px 20px 10px;
     }
 
     .lightbox-fan-container {
-        height: 480px;
+        height: 450px;
     }
 
     .fan-deck-stage {
-        height: 400px;
+        height: 370px;
     }
 
     .fan-card {
-        width: 220px;
-        height: 300px;
-        bottom: 10px;
+        width: 210px;
+        height: 290px;
+        bottom: 15px;
     }
 
     .fan-nav-btn {
@@ -1211,8 +1206,8 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
         font-size: 20px;
     }
 
-    .fan-prev { left: 4px; }
-    .fan-next { right: 4px; }
+    .fan-prev { left: 5px; }
+    .fan-next { right: 5px; }
 
     .fechar-lightbox {
         top: 15px;
@@ -1224,23 +1219,19 @@ a, button, input, textarea, .card, .fechar-lightbox, .mini-card-btn, nav a {
 @media (max-width: 480px) {
     .nexora-title-left,
     .nexora-title-right {
-        font-size: 28px;
-    }
-
-    .nexora-hero-person-cutout {
-        height: 290px !important;
+        font-size: 26px;
     }
 
     .lightbox-fan-container {
-        height: 430px;
+        height: 420px;
     }
 
     .fan-deck-stage {
-        height: 350px;
+        height: 340px;
     }
 
     .fan-card {
-        width: 195px;
-        height: 270px;
+        width: 190px;
+        height: 260px;
     }
 }
